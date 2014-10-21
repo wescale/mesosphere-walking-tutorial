@@ -1,0 +1,6 @@
+zk://{% for host in groups['upper_mesosphere'] %}
+{{ hostvars[host]['ansible_eth0'].ipv4.address }}:2181{% if not loop.last %},{% endif %}
+{% endfor %}/mesos
+
+
+

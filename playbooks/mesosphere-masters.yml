@@ -1,0 +1,90 @@
+---
+- hosts: upper_mesosphere
+  user: admin
+  sudo: yes
+
+  vars_files:
+    - "variables.yml"
+# TASKS ===================================================
+
+  tasks:
+    - name: mesosphere packages installed
+      apt:
+        pkg="{{ item }}"
+        state=present
+      with_items:
+        - openjdk-7-jdk
+        - mesos
+        - marathon
+
+    - name: zookeeper id is set
+      template:
+        src=templates/zookeeper_id.j2
+        dest=/etc/zookeeper/conf/myid
+        owner=root
+        group=root
+        mode=0644
+
+    - name: zookeeper node mapping is ok
+      template:
+        src=templates/zookeeper_conf.j2
+        dest=/etc/zookeeper/conf/zoo.cfg
+        backup=yes
+        owner=root
+        group=root
+        mode=0644
+      notify: restart zookeeper
+
+    - name: mesos zookeeper link configured
+      template:
+        src=templates/mesos_master_zk_conf.j2
+        dest=/etc/mesos/zk
+        owner=root
+        group=root
+        mode=0644
+      notify: restart mesos-master
+
+    - name: mesos quorum configured
+      template:
+        src=templates/mesos_quorum.j2
+        dest=/etc/mesos-master/quorum
+        owner=root
+        group=root
+        mode=0644
+      notify: restart mesos-master
+
+    - name: mesosphere system services enabled
+      service:
+        name="{{ item }}"
+        enabled=yes
+        state=started
+      with_items:
+        - zookeeper
+        - mesos-master
+        - marathon
+
+    - name: mesosphere unused system services disabled
+      service:
+        name=mesos-slave
+        enabled=no
+        state=stopped
+
+# HANDLER =================================================
+
+  handlers:
+    - name: restart marathon
+      service:
+        name=marathon
+        state=restarted
+
+    - name: restart mesos-master
+      service:
+        name=mesos-master
+        state=restarted
+      notify: restart marathon
+
+    - name: restart zookeeper
+      service:
+        name=zookeeper
+        state=restarted
+      notify: restart mesos-master

@@ -1,0 +1,25 @@
+---
+- hosts: all
+  user: admin
+  sudo: yes
+
+  vars_files:
+    - "variables.yml"
+
+# TASKS ===================================================
+
+  tasks:
+    - name: apt key for mesosphere repository is set
+      shell: apt-key adv --keyserver keyserver.ubuntu.com --recv E56151BF
+
+    - name: apt mesosphere repository is set
+      apt_repository:
+        repo="deb http://repos.mesosphere.io/{{ ansible_distribution|lower }} {{ ansible_lsb.codename }} main"
+        state=present
+
+    - name: update apt cache
+      apt: update_cache=yes cache_valid_time=3600
+
+
+- include: mesosphere-masters.yml
+- include: mesosphere-slaves.yml

@@ -1,0 +1,50 @@
+---
+- hosts: lower_mesosphere
+  user: admin
+  sudo: yes
+
+  vars_files:
+    - "variables.yml"
+
+# TASKS ===================================================
+
+  tasks:
+    - name: mesosphere packages installed
+      apt:
+        pkg="{{ item }}"
+        state=present
+      with_items:
+        - openjdk-7-jdk
+        - mesos
+
+    - name: mesos zookeeper link configured
+      template:
+        src=templates/mesos_master_zk_conf.j2
+        dest=/etc/mesos/zk
+        owner=root
+        group=root
+        mode=0644
+      notify: restart mesos-slave
+
+    - name: mesosphere system services enabled
+      service:
+        name=mesos-slave
+        enabled=yes
+        state=started
+
+    - name: mesosphere unused system services disabled
+      service:
+        name="{{ item }}"
+        enabled=no
+        state=stopped
+      with_items:
+        - mesos-master
+        - zookeeper
+
+# HANDLER =================================================
+
+  handlers:
+    - name: restart mesos-slave
+      service:
+        name=mesos-slave
+        state=restarted

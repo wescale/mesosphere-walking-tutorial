@@ -1,0 +1,65 @@
+---
+- hosts: local
+  connection: local
+  gather_facts: false
+
+  vars_files:
+    - "variables.yml"
+
+  tasks:
+    - name: Keypair is ok
+      local_action:
+        module: ec2_key
+        name: "{{keypair}}"
+        key_material: "{{ item }}"
+      with_file: keypair_local_pub_path
+
+    - name: Security group are created
+      local_action:
+        module: ec2_group
+        name: "{{ item.security_group.name }}"
+        description: "{{ item.security_group.description }}"
+      with_items:
+        - "{{upper_instances}}"
+        - "{{lower_instances}}"
+
+    - name: Security group rules are applied
+      local_action:
+        module: ec2_group
+        name: "{{ item.security_group.name }}"
+        description: "{{ item.security_group.description }}"
+        rules: "{{item.security_group.rules}}"
+      with_items:
+        - "{{upper_instances}}"
+        - "{{lower_instances}}"
+
+    - name: spawn master instances
+      local_action:
+        module: ec2
+        key_name: "{{ keypair }}"
+        instance_type: "{{ item.type }}"
+        group: "{{ item.security_group.name }}"
+        instance_tags:
+          Name: "{{ item.name }}"
+          ClusterRole: "{{ item.cluster_role}}"
+        image: "{{ item.ami }}"
+        wait: yes
+        count: "{{ item.count }}"
+        id: "{{ item.idempotency_id }}"
+      register: "ec2result"
+      with_items:
+        - "{{upper_instances}}"
+        - "{{lower_instances}}"
+
+    - name: collecting instance info for master nodes
+      local_action: add_host hostname={{ item.public_dns_name }} groupname=upper_mesosphere
+      with_items: ec2result.results[0].instances
+
+    - name: collecting instance info for slave nodes
+      local_action: add_host hostname={{ item.public_dns_name }} groupname=lower_mesosphere
+      with_items: ec2result.results[1].instances
+
+    - name: generate inventory
+      template:
+        src=templates/ec2_inventory.j2
+        dest=./ec2_inventory
