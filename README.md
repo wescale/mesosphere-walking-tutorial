@@ -1,0 +1,2 @@
+# WeScale Ansible
+
