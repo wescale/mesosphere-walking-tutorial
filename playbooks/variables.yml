@@ -8,7 +8,7 @@ mesos:
 
 upper_instances:
   name: mesosphere_lab_masters
-  idempotency_id: 'mlm_02'
+  idempotency_id: 'mlm_03'
   ami: ami-d130e6a6
   type: m1.small
   cluster_role: master
@@ -23,7 +23,7 @@ upper_instances:
 
 lower_instances:
   name: mesosphere_lab_slaves
-  idempotency_id: 'mls-01'
+  idempotency_id: 'mls-03'
   ami: ami-d130e6a6
   type: m1.small
   cluster_role: slave
