@@ -1,8 +1,9 @@
 [upper_mesosphere]
-ec2-54-220-247-75.eu-west-1.compute.amazonaws.com ansible_ssh_private_key_file=/Users/amaury/.ssh/id_rsa.hackathon zoo_keeper_index=1
-ec2-54-75-194-246.eu-west-1.compute.amazonaws.com ansible_ssh_private_key_file=/Users/amaury/.ssh/id_rsa.hackathon zoo_keeper_index=2
-ec2-54-170-144-245.eu-west-1.compute.amazonaws.com ansible_ssh_private_key_file=/Users/amaury/.ssh/id_rsa.hackathon zoo_keeper_index=3
+ec2-176-34-89-128.eu-west-1.compute.amazonaws.com ansible_ssh_private_key_file=/Users/amaury/.ssh/id_rsa.hackathon zoo_keeper_index=1
+ec2-54-74-13-150.eu-west-1.compute.amazonaws.com ansible_ssh_private_key_file=/Users/amaury/.ssh/id_rsa.hackathon zoo_keeper_index=2
+ec2-54-74-79-144.eu-west-1.compute.amazonaws.com ansible_ssh_private_key_file=/Users/amaury/.ssh/id_rsa.hackathon zoo_keeper_index=3
 
 [lower_mesosphere]
-ec2-54-74-72-11.eu-west-1.compute.amazonaws.com ansible_ssh_private_key_file=/Users/amaury/.ssh/id_rsa.hackathon
-ec2-54-170-177-254.eu-west-1.compute.amazonaws.com ansible_ssh_private_key_file=/Users/amaury/.ssh/id_rsa.hackathon
+ec2-54-228-26-127.eu-west-1.compute.amazonaws.com ansible_ssh_private_key_file=/Users/amaury/.ssh/id_rsa.hackathon
+ec2-54-75-88-42.eu-west-1.compute.amazonaws.com ansible_ssh_private_key_file=/Users/amaury/.ssh/id_rsa.hackathon
+ec2-54-170-166-44.eu-west-1.compute.amazonaws.com ansible_ssh_private_key_file=/Users/amaury/.ssh/id_rsa.hackathon

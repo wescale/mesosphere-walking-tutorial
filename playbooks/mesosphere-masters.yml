@@ -53,6 +53,26 @@
         mode=0644
       notify: restart mesos-master
 
+    - name: zookeeper id is set
+      file:
+        path=/etc/marathon/conf
+        state=directory
+        owner=root
+        group=root
+        mode=0755
+
+    - name: mesos hostname is ok
+      template:
+        src=templates/public_hostname.j2
+        dest="{{ item }}"
+        owner=root
+        group=root
+        mode=0644
+      with_items:
+        - /etc/mesos-master/hostname
+        - /etc/marathon/conf/hostname
+      notify: restart mesos-master
+
     - name: mesosphere system services enabled
       service:
         name="{{ item }}"
