@@ -65,7 +65,7 @@
         owner=root
         group=root
         mode=0644
-      notify: restart mesos-slave
+      notify: clean restart mesos-slave
 
     - name: mesos slaves - default configuration
       template:
@@ -74,7 +74,18 @@
         owner=root
         group=root
         mode=0644
-      notify: restart mesos-slave
+      notify: clean restart mesos-slave
+
+    - name: mesos slaves - specific configuration
+      template:
+        src=templates/value_file.j2
+        dest="/etc/mesos-slave/{{ item.key }}"
+        owner=root
+        group=root
+        mode=0644
+      with_items:
+        - { key: "containerizers", value: "docker,mesos" }
+      notify: clean restart mesos-slave
 
     - name: mesosphere system services enabled
       service:
@@ -94,6 +105,12 @@
 # HANDLER =================================================
 
   handlers:
+    - name: clean restart mesos-slave
+      file:
+        path=/tmp/mesos
+        state=absent
+      notify: restart mesos-slave
+
     - name: restart mesos-slave
       service:
         name=mesos-slave

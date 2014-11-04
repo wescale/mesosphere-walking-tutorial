@@ -3,8 +3,9 @@
         "type": "DOCKER",
         "docker": {
             "image": "crosbymichael/dockerui",
+            "network": "BRIDGE",
             "portMappings": [
-                { "containerPort": 9000, "hostPort": 9000, "servicePort": 9000, "protocol": "tcp" }
+                { "containerPort": 9000, "hostPort": 31500, "servicePort": 31500, "protocol": "tcp" }
             ]
         },
         "volumes": [

@@ -3,15 +3,15 @@
         "type": "DOCKER",
         "docker": {
             "image": "nginx:latest",
+            "network": "BRIDGE",
             "portMappings": [
-                { "containerPort": 80, "hostPort": 8080, "servicePort": 8080, "protocol": "tcp" }
+                { "containerPort": 80, "hostPort": 31250, "servicePort": 31250, "protocol": "tcp" }
             ]
         }
     },
     "id": "nginx",
     "instances": "1",
     "cpus": "0.5",
-    "mem": "512",
-    "ports": [8080],
+    "mem": "256",
     "uris": []
 }
