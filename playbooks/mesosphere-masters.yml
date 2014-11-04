@@ -16,6 +16,7 @@
         - openjdk-7-jdk
         - mesos
         - marathon
+      tags: install
 
     - name: zookeeper id is set
       template:
@@ -37,7 +38,7 @@
 
     - name: mesos zookeeper link configured
       template:
-        src=templates/mesos_master_zk_conf.j2
+        src=templates/mesos_zk_conf.j2
         dest=/etc/mesos/zk
         owner=root
         group=root

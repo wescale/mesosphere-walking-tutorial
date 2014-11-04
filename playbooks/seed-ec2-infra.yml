@@ -22,6 +22,7 @@
       with_items:
         - "{{upper_instances}}"
         - "{{lower_instances}}"
+      tags: security
 
     - name: Security group rules are applied
       local_action:
@@ -32,6 +33,7 @@
       with_items:
         - "{{upper_instances}}"
         - "{{lower_instances}}"
+      tags: security
 
     - name: spawn master instances
       local_action:

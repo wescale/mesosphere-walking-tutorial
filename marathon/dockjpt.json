@@ -1,0 +1,24 @@
+{
+    "container": {
+        "type": "DOCKER",
+        "docker": {
+            "image": "crosbymichael/dockerui",
+            "portMappings": [
+                { "containerPort": 9000, "hostPort": 9000, "servicePort": 9000, "protocol": "tcp" }
+            ]
+        },
+        "volumes": [
+            {
+                "hostPath": "/var/run/docker.sock",
+                "containerPath": "/docker.sock",
+                "mode": "RW"
+            }
+        ]
+    },
+    "args": ["-e /docker.sock"],
+    "id": "dockerui",
+    "instances": "1",
+    "cpus": "0.5",
+    "mem": "512",
+    "uris": []
+}

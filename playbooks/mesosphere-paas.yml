@@ -10,7 +10,10 @@
 
   tasks:
     - name: apt key for mesosphere repository is set
-      shell: apt-key adv --keyserver keyserver.ubuntu.com --recv E56151BF
+      apt_key:
+        keyserver=hkp://keyserver.ubuntu.com:80
+        id=E56151BF
+        state=present
 
     - name: apt mesosphere repository is set
       apt_repository:
@@ -19,6 +22,13 @@
 
     - name: update apt cache
       apt: update_cache=yes cache_valid_time=3600
+
+    - name: tooling is up confortable
+      apt:
+        pkg="{{item}}"
+        state=present
+      with_items:
+        - emacs
 
 
 - include: mesosphere-masters.yml

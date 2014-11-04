@@ -9,18 +9,68 @@
 # TASKS ===================================================
 
   tasks:
+    - name: repository for kernel update
+      apt_repository:
+        repo="deb http://http.debian.net/debian wheezy-backports main"
+        state=present
+        update-cache=yes
+      tags: install
+
+    - name: kernel ok
+      apt:
+        pkg="linux-image-amd64"
+        default_release=wheezy-backports
+        install_recommends=no
+        state=latest
+        update-cache=yes
+        cache_valid_time=3600
+      tags: install
+
+    - name: add the docker repository key
+      apt_key:
+        keyserver=hkp://keyserver.ubuntu.com:80
+        id=36A1D7869245C8950F966E92D8576A8BA88D21E9
+        state=present
+      tags: install
+
+    - name: add the docker repository
+      apt_repository:
+        repo='deb http://get.docker.io/ubuntu docker main'
+        state=present
+      tags: install
+
+    - name: install docker
+      apt:
+        pkg=lxc-docker
+        state=present
+        update_cache=yes
+        cache_valid_time=3600
+      tags: install
+
     - name: mesosphere packages installed
       apt:
         pkg="{{ item }}"
         state=present
+        update_cache=yes
+        cache_valid_time=3600
       with_items:
         - openjdk-7-jdk
         - mesos
+      tags: install
 
     - name: mesos zookeeper link configured
       template:
-        src=templates/mesos_master_zk_conf.j2
+        src=templates/mesos_zk_conf.j2
         dest=/etc/mesos/zk
+        owner=root
+        group=root
+        mode=0644
+      notify: restart mesos-slave
+
+    - name: mesos slaves - default configuration
+      template:
+        src=templates/mesos_slave_default.j2
+        dest=/etc/default/mesos-slave
         owner=root
         group=root
         mode=0644

@@ -4,15 +4,17 @@ keypair_local_pub_path: /Users/amaury/.ssh/id_rsa.hackathon.pub
 keypair: ansible-amaury
 
 mesos:
-  quorum: 2
+  quorum: 3
+
+# https://wiki.debian.org/Cloud/AmazonEC2Image/
 
 upper_instances:
   name: mesosphere_lab_masters
-  idempotency_id: 'mlm_04'
-  ami: ami-d130e6a6
+  idempotency_id: 'mlm_06'
+  ami: ami-187fd06f
   type: m1.small
   cluster_role: master
-  count: 3
+  count: 5
   security_group:
     name: mesosphere_lab_masters
     description: mesosphere_lab_masters rules
@@ -25,8 +27,8 @@ upper_instances:
 
 lower_instances:
   name: mesosphere_lab_slaves
-  idempotency_id: 'mls-04'
-  ami: ami-d130e6a6
+  idempotency_id: 'mls-06'
+  ami: ami-187fd06f
   type: m1.small
   cluster_role: slave
   count: 3
@@ -35,5 +37,8 @@ lower_instances:
     description: mesosphere_lab_slaves rules
     rules:
       - { proto: tcp, from_port: 22, to_port: 22, cidr_ip: 0.0.0.0/0 }
+      - { proto: tcp, from_port: 80, to_port: 80, cidr_ip: 0.0.0.0/0 }
+      - { proto: tcp, from_port: 8080, to_port: 8080, cidr_ip: 0.0.0.0/0 }
+      - { proto: tcp, from_port: 9000, to_port: 9000, cidr_ip: 0.0.0.0/0 }
       - { proto: tcp, from_port: 1024, to_port: 65535, group_name: mesosphere_lab_masters }
       - { proto: tcp, from_port: 1024, to_port: 65535, group_name: mesosphere_lab_slaves }
