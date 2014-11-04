@@ -83,6 +83,7 @@
         - zookeeper
         - mesos-master
         - marathon
+      tags: service
 
     - name: mesosphere unused system services disabled
       service:

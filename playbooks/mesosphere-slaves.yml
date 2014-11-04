@@ -85,6 +85,7 @@
         mode=0644
       with_items:
         - { key: "containerizers", value: "docker,mesos" }
+        - { key: "executor_registration_timeout", value: "5mins" }
       notify: clean restart mesos-slave
 
     - name: mesosphere system services enabled

@@ -10,7 +10,7 @@ mesos:
 
 upper_instances:
   name: mesosphere_lab_masters
-  idempotency_id: 'mlm_06'
+  idempotency_id: 'mlm_08'
   ami: ami-187fd06f
   type: m1.small
   cluster_role: master
@@ -27,7 +27,7 @@ upper_instances:
 
 lower_instances:
   name: mesosphere_lab_slaves
-  idempotency_id: 'mls-06'
+  idempotency_id: 'mls-08'
   ami: ami-187fd06f
   type: m1.small
   cluster_role: slave
@@ -37,8 +37,6 @@ lower_instances:
     description: mesosphere_lab_slaves rules
     rules:
       - { proto: tcp, from_port: 22, to_port: 22, cidr_ip: 0.0.0.0/0 }
-      - { proto: tcp, from_port: 80, to_port: 80, cidr_ip: 0.0.0.0/0 }
-      - { proto: tcp, from_port: 8080, to_port: 8080, cidr_ip: 0.0.0.0/0 }
       - { proto: tcp, from_port: 31000, to_port: 32000, cidr_ip: 0.0.0.0/0 }
       - { proto: tcp, from_port: 1024, to_port: 65535, group_name: mesosphere_lab_masters }
       - { proto: tcp, from_port: 1024, to_port: 65535, group_name: mesosphere_lab_slaves }
