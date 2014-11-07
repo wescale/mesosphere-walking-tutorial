@@ -1,17 +1,15 @@
 ---
-keypair_local_path: /Users/amaury/.ssh/id_rsa.hackathon
-keypair_local_pub_path: /Users/amaury/.ssh/id_rsa.hackathon.pub
-keypair: ansible-amaury
+keypair_local_path: /Users/amaury/.ssh/id_rsa.hackathon           # creer la sienne en local
+keypair_local_pub_path: /Users/amaury/.ssh/id_rsa.hackathon.pub   # elle sera uploadée au deploy d'infra
+keypair: mesos-lab
 
 mesos:
   quorum: 3
 
-# https://wiki.debian.org/Cloud/AmazonEC2Image/
-
 upper_instances:
   name: mesosphere_lab_masters
-  idempotency_id: 'mlm_08'
-  ami: ami-187fd06f
+  idempotency_id: 'mlm_08'    # WARN - Changer à chaque nouveau déploiement d'infra
+  ami: ami-187fd06f           # Debian Wheezy - https://wiki.debian.org/Cloud/AmazonEC2Image/
   type: m1.small
   cluster_role: master
   count: 5

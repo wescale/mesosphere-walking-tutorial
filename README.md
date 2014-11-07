@@ -12,5 +12,8 @@ Il faut le sortir, et le ramener à la racine du projet pour ensuite :
 
 ```ansible-playbook -i ec2_inventory playbooks/mesosphere-paas.yml```
 
-Toute cette tambouille pour obtenir : 5 mesos master, colocalisé avec des noeud zookeeper et 3 slaves, sous debian Wheezy. 
-+ Marathon pour déployer du docker
+Toute cette tambouille pour obtenir : 
+
+* 5 mesos master, colocalisé avec des noeud zookeeper 
+* 3 slaves, docker-ready 
+* Marathon
