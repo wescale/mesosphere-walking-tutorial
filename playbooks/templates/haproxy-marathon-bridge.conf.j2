@@ -1,0 +1,3 @@
+{% for host in groups['upper_mesosphere'] %}
+{{ hostvars[host]['ansible_eth0'].ipv4.address }}:8080
+{% endfor %}

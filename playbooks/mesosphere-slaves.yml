@@ -56,6 +56,8 @@
       with_items:
         - openjdk-7-jdk
         - mesos
+        - haproxy
+        - curl
       tags: install
 
     - name: mesos zookeeper link configured
@@ -103,6 +105,43 @@
         - mesos-master
         - zookeeper
 
+    - name: haproxy bridge conf dir present
+      file:
+        path=/etc/haproxy-marathon-bridge
+        state=directory
+        owner=root
+        group=root
+        mode=0755
+
+    - name: haproxy bridge deploy
+      copy:
+        src=files/haproxy-marathon-bridge
+        dest=/root/haproxy-marathon-bridge
+        owner=root
+        group=root
+        mode=0700
+      notify:
+        - deploy haproxy-bridge cron
+
+    - name: haproxy bridge configuration
+      template:
+        src=templates/haproxy-marathon-bridge.conf.j2
+        dest=/etc/haproxy-marathon-bridge/marathons
+        owner=root
+        group=root
+        mode=0644
+      notify:
+        - deploy haproxy-bridge cron
+
+    - name: haproxy system services enabled
+      service:
+        name=haproxy
+        enabled=yes
+        state=started
+
+
+
+
 # HANDLER =================================================
 
   handlers:
@@ -116,3 +155,6 @@
       service:
         name=mesos-slave
         state=restarted
+
+    - name: deploy haproxy-bridge cron
+      shell: /root/haproxy-marathon-bridge install_cronjob
