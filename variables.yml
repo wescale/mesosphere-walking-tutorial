@@ -1,24 +1,19 @@
 ---
 ssh_private_key: "{{ lookup('env', 'HOME') }}/.ssh/id_mesosphere_lab"
 ssh_public_key: "{{ ssh_private_key }}.pub"
+
 aws:
   keypair_label: mesosphere_lab
+  idempotency_id: alpha10
   ami:
-    debian: ami-187fd06f
-
-keypair_local_path: /Users/amaury/.ssh/id_rsa.hackathon           # creer la sienne en local
-keypair_local_pub_path: /Users/amaury/.ssh/id_rsa.hackathon.pub   # elle sera uploadée au deploy d'infra
-keypair: mesos-lab
+    debian: ami-187fd06f  # Debian Wheezy - https://wiki.debian.org/Cloud/AmazonEC2Image/
 
 mesos:
   quorum: 3
 
 upper_instances:
-  name: mesosphere_lab_masters
-  idempotency_id: 'mlm_10'    # WARN - Changer à chaque nouveau déploiement d'infra
-  ami: ami-187fd06f           # Debian Wheezy - https://wiki.debian.org/Cloud/AmazonEC2Image/
-  type: m1.small
   cluster_role: master
+  type: m1.small
   count: 5
   security_group:
     name: mesosphere_lab_masters
@@ -31,12 +26,9 @@ upper_instances:
       - { proto: tcp, from_port: 1024, to_port: 65535, group_name: mesosphere_lab_slaves }
 
 lower_instances:
-  name: mesosphere_lab_slaves
-  idempotency_id: 'mls-10'
-  ami: ami-187fd06f
-  type: m1.small
   cluster_role: slave
-  count: 3
+  type: m1.small
+  count: 5
   security_group:
     name: mesosphere_lab_slaves
     description: mesosphere_lab_slaves rules

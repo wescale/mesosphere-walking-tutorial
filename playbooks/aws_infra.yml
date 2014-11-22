@@ -1,11 +1,21 @@
 ---
 - hosts: localhost
   gather_facts: false
+  sudo: no
 
   vars_files:
     - "../variables.yml"
 
   tasks:
+    - name: Local keypair exist
+      stat:
+        path="{{ ssh_private_key }}"
+      register: localKey
+
+    - name: New key not present => generation
+      command: "ssh-keygen -t rsa -b 2048 -f {{ ssh_private_key }}"
+      when: not localKey.stat.exists
+
     - name: Keypair is referenced
       local_action:
         module: ec2_key
@@ -35,15 +45,15 @@
     - name: Mesosphere is ready
       local_action:
         module: ec2
-        id: "{{ item.idempotency_id }}"
+        id: "{{ aws.idempotency_id }}"
+        image: "{{ aws.ami.debian }}"
         wait: yes
         count: "{{ item.count }}"
         group: "{{ item.security_group.name }}"
-        image: "{{ item.ami }}"
         key_name: "{{ aws.keypair_label }}"
         instance_type: "{{ item.type }}"
         instance_tags:
-          Name: "{{ item.name }}"
+          Name: "mesosphere_lab_{{ item.cluster_role }}"
           ClusterRole: "{{ item.cluster_role}}"
       register: "ec2result"
       with_items:
