@@ -4,7 +4,7 @@ ssh_public_key: "{{ ssh_private_key }}.pub"
 
 aws:
   keypair_label: mesosphere_lab
-  idempotency_id: alpha16
+  idempotency_id: alpha24
   ami:
     debian: ami-187fd06f  # Debian Wheezy - https://wiki.debian.org/Cloud/AmazonEC2Image/
 
@@ -25,8 +25,8 @@ mesos:
         - { proto: tcp, from_port: 1024, to_port: 65535, group_name: mesosphere_lab_slaves }
   slaves:
     cluster_role: slave
-    type: m1.small
-    count: 3
+    type: m1.medium
+    count: 2
     security_group:
       name: "{{ aws.keypair_label }}_slaves"
       description: mesosphere_lab_slaves rules

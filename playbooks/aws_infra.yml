@@ -32,7 +32,6 @@
         - "{{ mesos.masters }}"
         - "{{ mesos.slaves }}"
 
-
     - name: Security group rules are applied
       local_action:
         module: ec2_group
@@ -43,10 +42,10 @@
         - "{{ mesos.masters }}"
         - "{{ mesos.slaves }}"
 
-    - name: Cluster is ready
+    - name: Spawing masters
       local_action:
         module: ec2
-        id: "{{ aws.idempotency_id }}"
+        id: "{{ item.cluster_role }}-{{ aws.idempotency_id }}"
         image: "{{ aws.ami.debian }}"
         wait: yes
         count: "{{ item.count }}"
@@ -55,18 +54,33 @@
         instance_type: "{{ item.type }}"
         instance_tags:
           Name: "{{ aws.keypair_label }}_{{ item.cluster_role }}"
-      register: "ec2result"
+      register: "ec2masters"
       with_items:
         - "{{ mesos.masters }}"
+
+    - name: Spawing slaves
+      local_action:
+        module: ec2
+        id: "{{ item.cluster_role }}-{{ aws.idempotency_id }}"
+        image: "{{ aws.ami.debian }}"
+        wait: yes
+        count: "{{ item.count }}"
+        group: "{{ item.security_group.name }}"
+        key_name: "{{ aws.keypair_label }}"
+        instance_type: "{{ item.type }}"
+        instance_tags:
+          Name: "{{ aws.keypair_label }}_{{ item.cluster_role }}"
+      register: "ec2slaves"
+      with_items:
         - "{{ mesos.slaves }}"
 
     - name: Collecting infos about upper mesosphere
       local_action: add_host hostname={{ item.public_dns_name }} groupname=upper_mesosphere
-      with_items: ec2result.results[0].instances
+      with_items: ec2masters.results[0].instances
 
     - name: Collecting infos about lower mesosphere
       local_action: add_host hostname={{ item.public_dns_name }} groupname=lower_mesosphere
-      with_items: ec2result.results[1].instances
+      with_items: ec2slaves.results[0].instances
 
     - name: Host inventory for AWS infra is generated
       template:
