@@ -4,61 +4,50 @@
   sudo: yes
 
   vars_files:
-    - "variables.yml"
-
-# TASKS ===================================================
+    - "../variables.yml"
 
   tasks:
-    - name: repository for kernel update
+    - name: Apt repository for kernel update is set
       apt_repository:
         repo="deb http://http.debian.net/debian wheezy-backports main"
         state=present
         update-cache=yes
-      tags: install
+        cache_valid_time=3600
 
-    - name: kernel ok
+    - name: Docker-ready kernel is installed
       apt:
         pkg="linux-image-amd64"
         default_release=wheezy-backports
         install_recommends=no
         state=latest
-        update-cache=yes
-        cache_valid_time=3600
-      tags: install
 
-    - name: add the docker repository key
+    - name: Docker apt repository key is set
       apt_key:
         keyserver=hkp://keyserver.ubuntu.com:80
         id=36A1D7869245C8950F966E92D8576A8BA88D21E9
         state=present
-      tags: install
 
-    - name: add the docker repository
+    - name: Docker apt repository is set
       apt_repository:
         repo='deb http://get.docker.io/ubuntu docker main'
         state=present
-      tags: install
+        update_cache=yes
+        cache_valid_time=3600
 
-    - name: install docker
+    - name: Docker is installed
       apt:
         pkg=lxc-docker
         state=present
-        update_cache=yes
-        cache_valid_time=3600
-      tags: install
 
-    - name: mesosphere packages installed
+    - name: Mesosphere packages installed
       apt:
         pkg="{{ item }}"
         state=present
         update_cache=yes
         cache_valid_time=3600
       with_items:
-        - openjdk-7-jdk
         - mesos
         - haproxy
-        - curl
-      tags: install
 
     - name: mesos zookeeper link configured
       template:

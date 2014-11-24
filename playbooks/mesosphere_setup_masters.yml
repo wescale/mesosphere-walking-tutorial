@@ -4,21 +4,18 @@
   sudo: yes
 
   vars_files:
-    - "variables.yml"
-# TASKS ===================================================
+    - "../variables.yml"
 
   tasks:
-    - name: mesosphere packages installed
+    - name: Mesosphere packages installed
       apt:
         pkg="{{ item }}"
         state=present
       with_items:
-        - openjdk-7-jdk
         - mesos
         - marathon
-      tags: install
 
-    - name: zookeeper id is set
+    - name: Zookeeper id is set
       template:
         src=templates/zookeeper_id.j2
         dest=/etc/zookeeper/conf/myid
@@ -26,7 +23,7 @@
         group=root
         mode=0644
 
-    - name: zookeeper node mapping is ok
+    - name: Zookeeper node mapping is ok
       template:
         src=templates/zookeeper_conf.j2
         dest=/etc/zookeeper/conf/zoo.cfg
@@ -34,27 +31,27 @@
         owner=root
         group=root
         mode=0644
-      notify: restart zookeeper
+      notify: Restart zookeeper
 
-    - name: mesos zookeeper link configured
+    - name: Mesos masters point to zookeeper
       template:
         src=templates/mesos_zk_conf.j2
         dest=/etc/mesos/zk
         owner=root
         group=root
         mode=0644
-      notify: restart mesos-master
+      notify: Restart mesos-master
 
-    - name: mesos quorum configured
+    - name: Mesos quorum is set
       template:
         src=templates/mesos_quorum.j2
         dest=/etc/mesos-master/quorum
         owner=root
         group=root
         mode=0644
-      notify: restart mesos-master
+      notify: Restart mesos-master
 
-    - name: zookeeper id is set
+    - name: Marathon config directory is created
       file:
         path=/etc/marathon/conf
         state=directory
@@ -62,7 +59,7 @@
         group=root
         mode=0755
 
-    - name: mesos hostname is ok
+    - name: Mesos hostname is set on public DNS
       template:
         src=templates/public_hostname.j2
         dest="{{ item }}"
@@ -72,9 +69,9 @@
       with_items:
         - /etc/mesos-master/hostname
         - /etc/marathon/conf/hostname
-      notify: restart mesos-master
+      notify: Restart mesos-master
 
-    - name: mesosphere system services enabled
+    - name: Mesosphere system services are enabled
       service:
         name="{{ item }}"
         enabled=yes
@@ -83,30 +80,27 @@
         - zookeeper
         - mesos-master
         - marathon
-      tags: service
 
-    - name: mesosphere unused system services disabled
+    - name: Mesosphere unused system services are disabled
       service:
         name=mesos-slave
         enabled=no
         state=stopped
 
-# HANDLER =================================================
-
   handlers:
-    - name: restart marathon
+    - name: Restart marathon
       service:
         name=marathon
         state=restarted
 
-    - name: restart mesos-master
+    - name: Restart mesos-master
       service:
         name=mesos-master
         state=restarted
-      notify: restart marathon
+      notify: Restart marathon
 
-    - name: restart zookeeper
+    - name: Restart zookeeper
       service:
         name=zookeeper
         state=restarted
-      notify: restart mesos-master
+      notify: Restart mesos-master

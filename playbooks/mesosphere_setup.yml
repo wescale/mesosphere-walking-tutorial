@@ -4,32 +4,30 @@
   sudo: yes
 
   vars_files:
-    - "variables.yml"
-
-# TASKS ===================================================
+    - "../variables.yml"
 
   tasks:
-    - name: apt key for mesosphere repository is set
+    - name: Mesosphere apt repository key is set
       apt_key:
         keyserver=hkp://keyserver.ubuntu.com:80
         id=E56151BF
         state=present
 
-    - name: apt mesosphere repository is set
+    - name: Mesosphere apt repository is set
       apt_repository:
         repo="deb http://repos.mesosphere.io/{{ ansible_distribution|lower }} {{ ansible_lsb.codename }} main"
         state=present
 
-    - name: update apt cache
-      apt: update_cache=yes cache_valid_time=3600
-
-    - name: toolbox
+    - name: Basic tools are installed
       apt:
         pkg="{{item}}"
+        update_cache=yes
+        cache_valid_time=3600
         state=present
       with_items:
+        - openjdk-7-jdk
         - emacs
+        - curl
 
-
-- include: mesosphere-masters.yml
-- include: mesosphere-slaves.yml
+- include: mesosphere_setup_masters.yml
+- include: mesosphere_setup_slaves.yml

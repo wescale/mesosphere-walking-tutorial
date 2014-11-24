@@ -29,8 +29,9 @@
         name: "{{ item.security_group.name }}"
         description: "{{ item.security_group.description }}"
       with_items:
-        - "{{upper_instances}}"
-        - "{{lower_instances}}"
+        - "{{ mesos.masters }}"
+        - "{{ mesos.slaves }}"
+
 
     - name: Security group rules are applied
       local_action:
@@ -39,10 +40,10 @@
         description: "{{ item.security_group.description }}"
         rules: "{{item.security_group.rules}}"
       with_items:
-        - "{{upper_instances}}"
-        - "{{lower_instances}}"
+        - "{{ mesos.masters }}"
+        - "{{ mesos.slaves }}"
 
-    - name: Mesosphere is ready
+    - name: Cluster is ready
       local_action:
         module: ec2
         id: "{{ aws.idempotency_id }}"
@@ -53,12 +54,11 @@
         key_name: "{{ aws.keypair_label }}"
         instance_type: "{{ item.type }}"
         instance_tags:
-          Name: "mesosphere_lab_{{ item.cluster_role }}"
-          ClusterRole: "{{ item.cluster_role}}"
+          Name: "{{ aws.keypair_label }}_{{ item.cluster_role }}"
       register: "ec2result"
       with_items:
-        - "{{ upper_instances }}"
-        - "{{ lower_instances }}"
+        - "{{ mesos.masters }}"
+        - "{{ mesos.slaves }}"
 
     - name: Collecting infos about upper mesosphere
       local_action: add_host hostname={{ item.public_dns_name }} groupname=upper_mesosphere
