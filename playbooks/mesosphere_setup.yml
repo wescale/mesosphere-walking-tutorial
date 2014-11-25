@@ -17,6 +17,7 @@
       apt_repository:
         repo="deb http://repos.mesosphere.io/{{ ansible_distribution|lower }} {{ ansible_lsb.codename }} main"
         state=present
+        update_cache=yes
 
     - name: Basic tools are installed
       apt:

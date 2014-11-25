@@ -12,7 +12,6 @@
         repo="deb http://http.debian.net/debian wheezy-backports main"
         state=present
         update-cache=yes
-        cache_valid_time=3600
 
     - name: Docker-ready kernel is installed
       apt:
@@ -20,6 +19,8 @@
         default_release=wheezy-backports
         install_recommends=no
         state=latest
+        update-cache=yes
+        cache_valid_time=3600
 
     - name: Docker apt repository key is set
       apt_key:
@@ -32,19 +33,18 @@
         repo='deb http://get.docker.io/ubuntu docker main'
         state=present
         update_cache=yes
-        cache_valid_time=3600
 
     - name: Docker is installed
       apt:
         pkg=lxc-docker
         state=present
+        update-cache=yes
+        cache_valid_time=3600
 
     - name: Mesosphere packages installed
       apt:
         pkg="{{ item }}"
         state=present
-        update_cache=yes
-        cache_valid_time=3600
       with_items:
         - mesos
         - haproxy
