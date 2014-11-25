@@ -1,19 +1,22 @@
-# WeScale Mesos
+# Mesosphere walking tutorial
 
-* Régler les paramètres dans ```playbooks/variables```, penser à changer l'idempotency_id AVANT chaque nouveau déploiement d'infra.
-* ```ansible-playbook -i local playbooks/seed-ec2-infra.yml``` : spawn l'infra sur ec2
-    * il faut avoir les bonnes variables d'environnement settées :
-        * EC2_REGION=eu-west-1
-        * AWS_ACCESS_KEY=...
-        * AWS_SECRET_KEY=...
+This is an Ansible automation following the tutorial of Mesosphere to setup an Apache Mesos cluster. At the end, 
+you'll get a functional Mesos cluster with a Docker image of nginx deployed on it.
 
-une fois l'infra spawnée, le playbook génère un host inventory dans ```playbooks/ec2_inventory```
-Il faut le sortir, et le ramener à la racine du projet pour ensuite :
+## Getting started
 
-```ansible-playbook -i ec2_inventory playbooks/mesosphere-paas.yml```
+* In ```variables.yml```, think about changing the ```aws.idempotency_id``` value BEFORE EACH fresh setup of AWS infrastructure.
+* Before launching any script of this repository, set these environment variables:
+    * EC2_REGION=...
+    * AWS_ACCESS_KEY=...
+    * AWS_SECRET_KEY=...
 
-Toute cette tambouille pour obtenir : 
+## Walking steps
 
-* 5 mesos master, colocalisé avec des noeud zookeeper 
-* 3 slaves, docker-ready 
-* Marathon
+* ```1-spawn_aws_infra.sh``` : Spawns infrastructure on AWS and generates a host inventory usable by Ansible 
+for next steps
+* ```2-mesosphere_setup.sh``` : Installs and configure all servers.
+* ```3-slave_restart.sh``` : Reboots slaves, so the new Docker-compliant kernel installed, will work.
+* ```4-start_nginx_docker.sh``` : Send a HTTP POST to marathon, to get nginx running.
+
+## Hack in peace !
