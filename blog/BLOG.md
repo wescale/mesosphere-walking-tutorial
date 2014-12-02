@@ -34,13 +34,22 @@ detail their behavior.
 
 ### ./1-spawn_aws_infra.sh
 
-**Disclaimer:** in the variables.yml file, change the `aws.idempotency_id` value before each setup you want to deploy on AWS. That value is used by Ansible and AWS to ensure that multiple run of the playbook will not results in systematically spawing new instances.
+
+```
+NOTICE:
+
+in variables.yml: change the aws.idempotency_id value BEFORE EACH SETUP you want to deploy on AWS.
+
+That value is used by Ansible and AWS to ensure that multiple run of the playbook will not results in systematically spawing new instances.
+```
 
 As it is built, the playbook will check the presence of a local ssh key named in **variables.yml**, and if it does not exist, generate it before registering it with AWS.
 
 That step will create one security group for Mesos master nodes and one for the slave nodes, spawn master and slave node according to their description in variables.yml, and generate an Ansible formatted host inventory to be used by next steps.
 
-The advised values of 3 master nodes and quorum of 2 are not efficient in AWS, where race conditions in instance spawing may occur. The behavior of a master node if all can’t get to elect a master is to simply shutdown… That can get frustrating when happening for the first time. A 5 master nodes with a quorum of 3 seems to be a good deal and to be a reliable setup. That are my default values, but you can change the count values in variables.yml if you like.
+The advised values of 3 master nodes and quorum of 2 are not efficient in AWS, where race conditions in instance spawing may occur. The behavior of a master node if all can’t get to elect a master is to simply shutdown… That can get frustrating when happening for the first time. 
+
+A 5 master nodes with a quorum of 3 seems to be a good deal and to be a reliable setup. That are my default values, but you can change the count values in `variables.yml` if you like.
 
 ### ./2-mesosphere_setup.sh
 
@@ -49,8 +58,7 @@ Where the magic happens… This step will configure Zookeeper, Mesos Master and 
 * on port 8080 you’ll get to Marathon web interface
 * on port 5050 you’ll get ot the mesos dashboard
 
-Every slave node is equipped with a HAProxy instance that regenerates
-its configuration every minute by crawling Marathon.
+Every slave node is equipped with a HAProxy instance that generates its configuration every minute by crawling Marathon.
 
 ### ./3-slave_restart.sh
 
