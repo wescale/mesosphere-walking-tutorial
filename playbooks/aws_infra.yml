@@ -38,11 +38,7 @@
         name: "{{ item.security_group.name }}"
         description: "{{ item.security_group.description }}"
         rules: "{{item.security_group.rules}}"
-        rules_egress:
-          - proto: all
-            from_port: 0
-            to_port: 65535
-            cidr_ip: 0.0.0.0/0
+        rules_egress: "{{item.security_group.rules_egress}}"
       with_items:
         - "{{ mesos.masters }}"
         - "{{ mesos.slaves }}"

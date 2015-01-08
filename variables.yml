@@ -23,6 +23,8 @@ mesos:
         - { proto: tcp, from_port: 8080, to_port: 8080, cidr_ip: 0.0.0.0/0 }
         - { proto: tcp, from_port: 1024, to_port: 65535, group_name: "{{ aws.keypair_label }}_masters" }
         - { proto: tcp, from_port: 1024, to_port: 65535, group_name: "{{ aws.keypair_label }}_slaves" }
+      rules_egress:
+        - { proto: all, from_port: 0, to_port: 65535, cidr_ip: 0.0.0.0/0 }
   slaves:
     cluster_role: slave
     type: m1.medium
@@ -35,3 +37,5 @@ mesos:
         - { proto: tcp, from_port: 31000, to_port: 32000, cidr_ip: 0.0.0.0/0 }
         - { proto: tcp, from_port: 1024, to_port: 65535, group_name: "{{ aws.keypair_label }}_masters" }
         - { proto: tcp, from_port: 1024, to_port: 65535, group_name: "{{ aws.keypair_label }}_slaves" }
+      rules_egress:
+        - { proto: all, from_port: 0, to_port: 65535, cidr_ip: 0.0.0.0/0 }
