@@ -9,7 +9,7 @@
   tasks:
     - name: Mesosphere apt repository key is set
       apt_key:
-        keyserver=hkp://keyserver.ubuntu.com:80
+        keyserver=keyserver.ubuntu.com
         id=E56151BF
         state=present
 
